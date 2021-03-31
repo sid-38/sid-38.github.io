@@ -1,8 +1,10 @@
-<html>
-<head>
-<title> Notebook </title>
-</head>
-<body>
-Testing immediate changes1!
-</body>
-</html>
+<canvas id="canvas"></canvas>
+<script src="https://unpkg.com/rive-js@0.0.4/dist/rive.js"></script>
+<script>
+  // autoplays the first animation in the default artboard
+  new Rive({
+    src: 'https://cdn.rive.app/animations/tv_color.riv',
+    canvas: document.getElementById('canvas'),
+    autoplay: true,
+  })
+</script>
