@@ -1,0 +1,133 @@
+html,body {
+    height: 100%;
+}
+
+body{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    /* font-family: 'Brush Script MT', cursive; */
+    background-color: antiquewhite;
+    /* border: 1px solid red; */
+}
+
+.profile-pic{
+    width: 400px;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 50%;
+    /* box-shadow: 0 0px 8px 0 rgb(0 0 0 / 20%), 0 0px 20px 0 rgb(0 0 0 / 19%); */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    border: 3px solid #000000;
+}
+
+.profile-pic-arrow{
+    width: 400px;
+    height: 400px;
+    /* max-height: 80%; */
+}
+
+.arrow{
+    position: absolute;
+    top: 35%;
+    left: 56%;
+    width: 350px;
+}
+
+.top-left{
+    position: absolute;
+    top:0;
+    left: 0;
+}
+
+.arrow-right {
+  width: 0; 
+  height: 0; 
+  border-top: 0px solid transparent;
+  border-bottom: 25em solid transparent;
+  border-left: 25em solid green;
+}
+
+.img-container{
+    display: grid;
+    place-items: center;
+    padding: 16px;
+    /* position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%); */
+}
+
+.img-container-fixed{
+    position:absolute;
+    width: 100%;
+    left: 40%;
+    /* top: 50%; */
+    /* transform: translate(-50%, -50%); */
+}
+
+@keyframes appear{
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.nav{
+    display: grid;
+    place-items: center;
+    width: 100%;
+    /* margin: 32px; */
+    margin-bottom: 48px;
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 32px;
+}
+.nav-fixed{
+    position: absolute;
+    bottom:0;
+    left:0;
+    width: 100%;
+    display: grid;
+    place-items: center;
+    /* margin: 32px; */
+    margin-bottom: 48px;
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 32px;
+}
+
+.nav-card{
+    /* display: inline-block; */
+    text-align: center;
+    border: 1px solid rgb(216, 211, 211);
+    width: 100px;
+    font-size: 1.5rem;
+    padding: 8px 32px;
+    animation-name: appear;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-in-out; 
+    animation-fill-mode: backwards;
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.n2{
+    animation-delay: 0.5s;
+}
+
+.n3{
+    animation-delay: 1s;
+}
+.nav-card:hover{
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    cursor: pointer;
+}
+
+.name{
+    font-size: 2em;
+    opacity: 0.9;
+    font-stretch: expanded;
+    text-align:center;
+    padding: 16px;
+    
+}
+
+

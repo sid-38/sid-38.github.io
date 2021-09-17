@@ -1,0 +1,46 @@
+.landscape img{
+    width: 100%;
+    height: 100vm;
+}
+
+/* body{
+    background: linear-gradient(#ffaa80,#ff661a);
+    
+} */
+html, body { height: 100%; width: 100%; margin: 0; }
+
+body{
+    box-sizing: border-box;
+    /* width: 100vh; */
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+section{
+    /* min-height: 100vh; */
+    height: 100%;
+}
+
+#foreground{
+    z-index: 10;
+    height: 100vh;
+    background-color: #fff;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#sky{
+    background: linear-gradient(#ffaa80,#ff661a);
+    height: 50%;
+    width: 100%;
+    z-index: 9;
+}
+
+#mountains_bg{
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateY(100px);
+    /* background: #fff; */
+}
