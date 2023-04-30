@@ -7,6 +7,7 @@ permalink: /poems/
 ### The Last Vine
 
 {% highlight text %}
+
 I open my eyes as slowly as I can,
 Never liked to see the reality.
 But there are times when you have to 
@@ -58,9 +59,12 @@ But I don't want to go , I don't want to get lost
 And so my fingers reach out to the vine
 
 To the last vine, to the last hope, fluttering in the wind.
+
 {% endhighlight %}
 
 ### Grief
+
+{% highlight text %}
 
 It fills up inside you
 to the edge of your throat
@@ -77,3 +81,5 @@ Alongside this war-torn neighbor?
 
 താരാട്ട് പാടി ഒരു കുഞ്ഞിനെ ഉറക്കും വിധം 
 വേദനകളെ ഉറക്കിയവരല്ലേ നമ്മൾ ?
+
+{% endhighlight %}
