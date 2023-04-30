@@ -4,12 +4,14 @@ title: About
 permalink: /about/
 ---
 
-Some information about you!
+Master of Computer Science at Texas A&M University (2024)
+
+Bachelor of Technolgy in Computer Science and Engineering (2021)
 
 ### More Information
 
-A place to include any other types of information that you'd like to include about yourself.
+Currently on the lookout for internship and full time opportunities in cybersecurity
 
 ### Contact me
 
-[email@domain.com](mailto:email@domain.com)
+[sidharthanil98@gmail.com](mailto:sidharthanil98@gmail.com)
