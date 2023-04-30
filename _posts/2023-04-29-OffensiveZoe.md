@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Offensive Zoe - AntiVirus vs Adversarial Attacks
+title: OffensiveZoe - AntiVirus vs Adversarial Attacks
 ---
 
 This semester, I took a special topics course called "ML Based CyberDefenses" under [Dr.Botacin](https://github.com/marcusbotacin). The reason why I took the course was probably because of the description that was given for the course. From what I remember, the course went over how to build malware detection systems using machine learning and over adversarial attacks against such machine learning models. More importantly, the course did not have a final examination but instead had an in-class competition emulating the "Machine Learning Security Evasion Competition" hosted by MLSec.
