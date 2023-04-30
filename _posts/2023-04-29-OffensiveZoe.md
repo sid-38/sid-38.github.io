@@ -7,7 +7,7 @@ This semester, I took a special topics course called "ML Based CyberDefenses" un
 
 Luckily the description turned out not to be a clickbait, but instead offered me probably the most hands-on course I've done till now on CyberSecurity. The majority of the class went over students' taking seminars over recent papers in the domain, which was later followed by an even longer discussion about the seminar (which sometimes went into tangents into different topics in CyberSec). The competition had us building machine learning models trained to detect malware through static analysis, as well as modifying malware files to make it evasive to our classmates' detection systems. The result of the competition depended on how well your detection performed against the adversarial attacks it faces, and on how well your adversarial malware samples performed against other team's models. So we prepared for the competition with my teammates, [SidBav](https://github.com/sidbav), [Soumya](https://github.com/Soumyajyotidutta) and [Veronika](https://github.com/vmaragulova3)
 
-![Zoe - Our Team Mascot](/images/my-image.jpg)
+![Zoe - Our Team Mascot](/images/zoe.png)
 
 ## Defend
 
