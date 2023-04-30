@@ -7,13 +7,15 @@ This semester, I took a special topics course called "ML Based CyberDefenses" un
 
 Luckily the description turned out not to be a clickbait, but instead offered me probably the most hands-on course I've done till now on CyberSecurity. The majority of the class went over students' taking seminars over recent papers in the domain, which was later followed by an even longer discussion about the seminar (which sometimes went into tangents into different topics in CyberSec). The competition had us building machine learning models trained to detect malware through static analysis, as well as modifying malware files to make it evasive to our classmates' detection systems. The result of the competition depended on how well your detection performed against the adversarial attacks it faces, and on how well your adversarial malware samples performed against other team's models. So we prepared for the competition with my teammates, [SidBav](https://github.com/sidbav), [Soumya](https://github.com/Soumyajyotidutta) and [Veronika](https://github.com/vmaragulova3)
 
+![Zoe - Our Team Mascot](/images/my-image.jpg)
+
 ## Defend
 
 For the defensive part, the basic strategy was a trial and error through differnt ML Models. For the dataset, we went for the [EmberDataset](https://github.com/elastic/ember) for the basic layer with a plan to add on to it with more recent data or data that is tailored for the competition. Ember has its own feature extractor that was throwing some errors when we tried to get it up and running. We debugged through the error to find that due to updates in [LIEF library](https://github.com/lief-project), a library that can be used to read and modify executable files, a certain attribute was not in the format that Ember Feature Extractor was expecting. If I remember correctly, it was the 'entry' attribute that needed to be enclosed in an extra pair of square brackets. Ember by default uses a LightGBM model and that's what we went ahead with for the basic version. Later we switched to a Random Forest Classifier model and submitted that for the first delivarable. 
 
 After this blind submission, the professor released the samples he was testing our model against. In order to meet some criteria the competition had regarding False Positive Rate and False Negative Rate, we adjusted the threshold. We tried going down the route of a different feature extractor, in this case, we tried the extractor that our professor had built for his competition. The extractor chose a subset of the attributes available through the PE File Format and then blew it up into a 200,000 feature space. Sadly, all our laptops crashed under this heavy load and we couldn't get the university systems to work for us in theduration of the competition. So we gave up on that idea and went back to the Ember Feature Extractor.
 
-The next idea was to add on to our dataabase. And instead of blindly trying out different datasets, we decided to target datasets. For this purpose we created a "Vocabulary Extractor" script, that basically walks through directories of PE files and creates a set (vocabulary) of the strings it sees. This could be the import functions, the exports functions, the datadirectories, entrypoint etc. 
+The next idea was to add on to our dataabase. And instead of blindly trying out different datasets, we decided to target datasets. For this purpose we created a [Vocabulary Extractor](https://github.com/sidbav/AV-vs-Evasive/tree/testing-attacks/scripts/vocabulary_extractor) script, that basically walks through directories of PE files and creates a set (vocabulary) of the strings it sees. This could be the import functions, the exports functions, the datadirectories, entrypoint etc. 
 
 Here's a preview of the vocabulary we created out of the test samples
 
@@ -30,7 +32,7 @@ imports->KERNEL32.dll->EnterCriticalSection
 header->optional->subsystem->WINDOWS_GUI
 ```
 
-We also created a vocabulary from the ember dataset that our model was training on. Using another script called (Vocabulary Comparer), we found the difference between these vocabularies to figure out where our model was lacking. The strategy once we found these "missing" words was to write a script that downloads malware files from the internet, extracts the vocabulary of the file and then compares it with the "missing words" to decide whether to keep the file or not. However, due to lack of time we were not able to build this script and hence had to go back to trial-and-erroring through different dataset.
+We also created a vocabulary from the ember dataset that our model was training on. Using another script called [Vocabulary Comparer](https://github.com/sidbav/AV-vs-Evasive/tree/testing-attacks/scripts/vocab_comparer), we found the difference between these vocabularies to figure out where our model was lacking. The strategy once we found these "missing" words was to write a script that downloads malware files from the internet, extracts the vocabulary of the file and then compares it with the "missing words" to decide whether to keep the file or not. However, due to lack of time we were not able to build this script and hence had to go back to trial-and-erroring through different dataset.
 
 Here's another issue we came up against when we were trying to train our models. The dataset was getting too big to be contained and processed on in the RAM. More specifically, we had multiple datasets that should be combined into one training set which was then meant to be fed into the model as input. However just combining it all together was eating through my RAM and causing my computer to crash. So we had to figure out a better way. This is where numpy's memmap came into the picture. With this function, we were able to do the combining process on disk without loading it into memory. 
 
@@ -53,3 +55,5 @@ So armed with a couple of different strategies with varying rates of success we 
 ## Results
 
 Our team came in first place for the attack phase of the competition!
+
+Link for the project repository [here](https://github.com/sidbav/AV-vs-Evasive)
