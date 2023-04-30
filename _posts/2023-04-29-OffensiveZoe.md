@@ -5,11 +5,11 @@ title: Offensive Zoe - AntiVirus vs Adversarial Attacks
 
 This semester, I took a special topics course called "ML Based CyberDefenses" under [Dr.Botacin](https://github.com/marcusbotacin). The reason why I took the course was probably because of the description that was given for the course. From what I remember, the course went over how to build malware detection systems using machine learning and over adversarial attacks against such machine learning models. More importantly, the course did not have a final examination but instead had an in-class competition emulating the "Machine Learning Security Evasion Competition" hosted by MLSec.
 
-Luckily the description turned out not to be a clickbait, but instead offered me probably the most hands-on course I've done till now on CyberSecurity. The majority of the class went over students' taking seminars over recent papers in the domain, which was later followed by an even longer discussion about the seminar (which sometimes went into tangents into different topics in CyberSec). The competition had us building machine learning models trained to detect malware through static analysis, as well as modifying malware files to make it evasive to our classmates' detection systems. The result of the competition depended on how well your detection performed against the adversarial attacks it faces, and on how well your adversarial malware samples performed against other team's models. So we prepared for the competition with my teammates, SidBav (https://github.com/sidbav), Soumya (https://github.com/Soumyajyotidutta) and Veronika (https://github.com/vmaragulova3)
+Luckily the description turned out not to be a clickbait, but instead offered me probably the most hands-on course I've done till now on CyberSecurity. The majority of the class went over students' taking seminars over recent papers in the domain, which was later followed by an even longer discussion about the seminar (which sometimes went into tangents into different topics in CyberSec). The competition had us building machine learning models trained to detect malware through static analysis, as well as modifying malware files to make it evasive to our classmates' detection systems. The result of the competition depended on how well your detection performed against the adversarial attacks it faces, and on how well your adversarial malware samples performed against other team's models. So we prepared for the competition with my teammates, [SidBav](https://github.com/sidbav), [Soumya](https://github.com/Soumyajyotidutta) and [Veronika](https://github.com/vmaragulova3)
 
 ## Defend
 
-For the defensive part, the basic strategy was a trial and error through differnt ML Models. For the dataset, we went for the EmberDataset(https://github.com/elastic/ember) for the basic layer with a plan to add on to it with more recent data or data that is tailored for the competition. Ember has its own feature extractor that was throwing some errors when we tried to get it up and running. We debugged through the error to find that due to updates in LIEF library(https://github.com/lief-project), a library that can be used to read and modify executable files, a certain attribute was not in the format that Ember Feature Extractor was expecting. If I remember correctly, it was the 'entry' attribute that needed to be enclosed in an extra pair of square brackets. Ember by default uses a LightGBM model and that's what we went ahead with for the basic version. Later we switched to a Random Forest Classifier model and submitted that for the first delivarable. 
+For the defensive part, the basic strategy was a trial and error through differnt ML Models. For the dataset, we went for the [EmberDataset](https://github.com/elastic/ember) for the basic layer with a plan to add on to it with more recent data or data that is tailored for the competition. Ember has its own feature extractor that was throwing some errors when we tried to get it up and running. We debugged through the error to find that due to updates in [LIEF library](https://github.com/lief-project), a library that can be used to read and modify executable files, a certain attribute was not in the format that Ember Feature Extractor was expecting. If I remember correctly, it was the 'entry' attribute that needed to be enclosed in an extra pair of square brackets. Ember by default uses a LightGBM model and that's what we went ahead with for the basic version. Later we switched to a Random Forest Classifier model and submitted that for the first delivarable. 
 
 After this blind submission, the professor released the samples he was testing our model against. In order to meet some criteria the competition had regarding False Positive Rate and False Negative Rate, we adjusted the threshold. We tried going down the route of a different feature extractor, in this case, we tried the extractor that our professor had built for his competition. The extractor chose a subset of the attributes available through the PE File Format and then blew it up into a 200,000 feature space. Sadly, all our laptops crashed under this heavy load and we couldn't get the university systems to work for us in theduration of the competition. So we gave up on that idea and went back to the Ember Feature Extractor.
 
@@ -17,25 +17,18 @@ The next idea was to add on to our dataabase. And instead of blindly trying out 
 
 Here's a preview of the vocabulary we created out of the test samples
 
+```
 imports->USER32.dll->GetDC
-
 datadirectories->name->CERTIFICATE_TABLE
-
 imports->KERNEL32.dll->CreateSemaphoreA
-
 imports->KERNEL32.dll->IsBadStringPtrA
-
 imports->KERNEL32.dll->WriteFile
-
 imports->KERNEL32.dll->EndUpdateResourceW
-
 imports->KERNEL32.dll->GetProcessPriorityBoost
-
 imports->KERNEL32.dll->WideCharToMultiByte
-
 imports->KERNEL32.dll->EnterCriticalSection
-
 header->optional->subsystem->WINDOWS_GUI
+```
 
 We also created a vocabulary from the ember dataset that our model was training on. Using another script called (Vocabulary Comparer), we found the difference between these vocabularies to figure out where our model was lacking. The strategy once we found these "missing" words was to write a script that downloads malware files from the internet, extracts the vocabulary of the file and then compares it with the "missing words" to decide whether to keep the file or not. However, due to lack of time we were not able to build this script and hence had to go back to trial-and-erroring through different dataset.
 
