@@ -20,7 +20,7 @@ The next idea was to add on to our dataabase. And instead of blindly trying out 
 
 Here's a preview of the vocabulary we created out of the test samples
 
-```
+{% highlight text %}
 imports->USER32.dll->GetDC
 datadirectories->name->CERTIFICATE_TABLE
 imports->KERNEL32.dll->CreateSemaphoreA
@@ -31,7 +31,7 @@ imports->KERNEL32.dll->GetProcessPriorityBoost
 imports->KERNEL32.dll->WideCharToMultiByte
 imports->KERNEL32.dll->EnterCriticalSection
 header->optional->subsystem->WINDOWS_GUI
-```
+{% endhighlight %}
 
 We also created a vocabulary from the ember dataset that our model was training on. Using another script called [Vocabulary Comparer](https://github.com/sidbav/AV-vs-Evasive/tree/testing-attacks/scripts/vocab_comparer), we found the difference between these vocabularies to figure out where our model was lacking. The strategy once we found these "missing" words was to write a script that downloads malware files from the internet, extracts the vocabulary of the file and then compares it with the "missing words" to decide whether to keep the file or not. However, due to lack of time we were not able to build this script and hence had to go back to trial-and-erroring through different dataset.
 
