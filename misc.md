@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Poems
-permalink: /poems/
+permalink: /misc/
 ---
 
 ### The Last Vine
