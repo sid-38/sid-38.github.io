@@ -7,7 +7,7 @@ For the course "ML Based CyberDefenses" under [Dr.Botacin](https://github.com/ma
 
 ![Zoe - Our Team Mascot](/images/zoe.png)
 
-## Defend
+# Defend
 
 ### Initial Dataset and Feature Extractor
 
@@ -42,7 +42,7 @@ Here's another issue we came up against when we were trying to train our models.
 ### Final Model
 After a couple of all-nighters or near all-nighters, we came up with a couple of different models that were honestly not performing good enough. We tried a combination of different models in a pipeline approach and finally got to a model that was performing comparatively better than others: Random Forest with 100 estimators(named Zoe) trained on Ember2018 dataset, and a Random Forest with 300 estimators (named Mike from Monsters Inc.) trained on Ember2018, Benign-NET and Bodmas all of which uses the PE format attributes to detect malware. [Here's](https://hub.docker.com/repository/docker/sidbav/689-final-submission/general) the docker image for our model.
 
-## Attack 
+# Attack 
 
 For the attack part, we parallely started testing out how appending random strings and benign strings would influence the detection, as well as getting a dropper working. 
 
