@@ -1,8 +1,13 @@
 ---
 layout: page
-title: Poems
+title: Misc
 permalink: /misc/
 ---
+# Sketch
+
+![Cycle sketch](/images/cycle.jpeg)
+
+# Poems
 
 ### The Last Vine
 
