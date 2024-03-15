@@ -1,8 +1,9 @@
 ---
 layout: post
-title: List of Things I've done in Computer Science
+title: Accomplishments in Computer Science
 ---
 
+1. Open source contributions to x64dbg
 1. Reimplementing AutoYARA in Python
 1. AI Assistant for Binary Debugging 
 1. Operating System in C++
