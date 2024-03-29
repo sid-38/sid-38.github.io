@@ -59,6 +59,7 @@ async def app(scope, receive, send):
     })
 ```
 
+[Link to the Uvicorn Discussion](https://github.com/encode/uvicorn/discussions/2292)
 
 At this point, I had started using a Process Explorer to see the process hierarchy in order to try and figure out how a reload process in the main thread could affect a subprocess. I also started studying the code in uvicorn to see how they carried out their reload process. I noticed that on detecting file changes they kill their server process (a child process in the hierarchy) and they start it over again. And an even more interesting bit was that they were using a CTRL\_C\_EVENT signal to close the server. Since I was on the lookout for Ctrl+C from the beginning, I started tracing out the changes to this piece of code through their changelog. I noticed that earlier they were using a Process.terminate() function and they changed it to the Ctrl+C event a couple of versions back. This again corroborated our issue as I noticed that Python 3.11 was using a uvicorn version before this change whereas Python 3.12 was using the one after.
 
