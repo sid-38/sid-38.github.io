@@ -13,8 +13,54 @@ So I was going through the open source repository of the Python web framework Re
 
 The developer had mentioned in the issue discussion that the bug is connected to one of their upstream dependency ‘uvicorn’. Uvicorn is an ASGI web server in Python and Reflex uses Uvicorn as their backend server in development mode. Uvicorn has a reload functionality that detects the changes in the server directory and updates the server accordingly. I tested out the uvicorn server on its own and the reload functionality was working perfectly. The next thing I did was go through the reflex code and see how they were using the uvicorn server inside it. I also studied how they were spawning the frontend server as well. With this information, I created a very small mock reflex, that was using uvciorn server and a mock frontend server (a while loop printing the word “Frontend”) just the way the original reflex implemented it. In short, the frontend server was initiated as a python subprocess and the uvicorn server ran in the main thread. This mock version took away a lot of the complexities and reduced it down to simple elements so that I can zone in on where the issue is. And sure enough, when I ran it, a reload of the uvicorn server killed my mock frontend.
 
+```python
+# main.py
 
-At this point, I had started using a Process Explorer to see the process hierarchy in order to try and figure out how a reload process in the main thread could affect a subprocess. I started studying the code in uvicorn to see how they carried out their reload process. I noticed that on detecting file changes they kill their server process (a child process in the hierarchy) and they start it over again. And an even more interesting bit was that they were using a CTRL\_C\_EVENT signal to close the server. Since I was on the lookout for Ctrl+C from the beginning, I started tracing out the changes to this piece of code through their changelog. I noticed that earlier they were using a Process.terminate() function and they changed it to the Ctrl+C event a couple of versions back. This again corroborated our issue as I noticed that Python 3.11 was using a uvicorn version before this change whereas Python 3.12 was using the one after.
+import subprocess
+import uvicorn
+
+process = subprocess.Popen(["python", "frontend.py"], shell=True)
+
+print("Starting uvicorn")
+uvicorn.run(
+    app="uvicorn_main:app",
+    port=5000,
+    log_level="debug",
+    reload=True)
+```
+
+```python
+# frontend.py
+
+import time
+
+if __name__ == "__main__":
+    while True:
+        print("frontend")
+        time.sleep(5)
+```
+
+```python
+# uvicorn_main.py
+
+async def app(scope, receive, send):
+    assert scope['type'] == 'http'
+
+    await send({
+        'type': 'http.response.start',
+        'status': 200,
+        'headers': [
+            [b'content-type', b'text/plain'],
+        ],
+    })
+    await send({
+        'type': 'http.response.body',
+        'body': b'Hello, world!',
+    })
+```
+
+
+At this point, I had started using a Process Explorer to see the process hierarchy in order to try and figure out how a reload process in the main thread could affect a subprocess. I also started studying the code in uvicorn to see how they carried out their reload process. I noticed that on detecting file changes they kill their server process (a child process in the hierarchy) and they start it over again. And an even more interesting bit was that they were using a CTRL\_C\_EVENT signal to close the server. Since I was on the lookout for Ctrl+C from the beginning, I started tracing out the changes to this piece of code through their changelog. I noticed that earlier they were using a Process.terminate() function and they changed it to the Ctrl+C event a couple of versions back. This again corroborated our issue as I noticed that Python 3.11 was using a uvicorn version before this change whereas Python 3.12 was using the one after.
 
 Now, I was getting pretty sure that it is this line of code that was affecting my frontend server and I did a couple of tests to confirm that all the versions before this change were working perfectly. Now the question was, why would uvicorn sending a Ctrl+C to one of its child affect a subprocess that was initiated by its ancestor. That made absolutely no sense to me. So I went into more deep dives on the Ctrl+C event.
 
