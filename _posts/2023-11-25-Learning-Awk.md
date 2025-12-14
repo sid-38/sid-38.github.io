@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Learning Awk!
+excerpt_separator: <!--more-->
 ---
 
 On a path to understand the widely famed power of Awk. Hope to conquer it one day, just for the sake of it. Sed is the next one on the bucket list
@@ -14,7 +15,7 @@ awk '{print $2}' input_file
 ```
 
 Awk follows a \<pattern\> \<action\> format. For each line, awk will apply the pattern and see if it matches. If it does match, it'll perform the action. Now, you can omit either pattern or action but atleast one should be present. If action is omitted, the default action is to just print the line out. If pattern is omitted, the action would be applied to all the lines. 
-
+<!--more-->
 In the above example of printing out the second word, there is no pattern but only action. $1 corresponds to the first word, $2 to the second and so on. $0 corresponds to the whole line.
 
 
