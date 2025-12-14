@@ -1,8 +1,7 @@
 ---
 layout: post
 title: Open Source Contributions
-excerpt_separator: <!--more-->
-show_read_more: false
+full_excerpt: true
 ---
 
 1. [https://github.com/astral-sh/uv/issues/1980](https://github.com/astral-sh/uv/issues/1980)

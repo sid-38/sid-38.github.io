@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Investigating a bug in Reflex
+excerpt_separator: <!--more-->
 ---
 
 For the last 4-5 days, I’ve been spending a large amount of time investigating a bug and figuring out its fix. This meant, diving into rabbit holes, going deeper and deeper and surrounding myself with documentation and online discussion forums. I’m briefly outlining the process here mostly because I’m pretty proud of what I did.
@@ -9,6 +10,7 @@ For the last 4-5 days, I’ve been spending a large amount of time investigating
 
 So I was going through the open source repository of the Python web framework Reflex and I saw that they had an issue that was preventing them from using Reflex in Windows systems with Python 3.12. The issue was that whenever they were using Reflex in this environment and they leveraged the hot reload feature of the tool, the frontend server just dies. In other words, when you make a change in one of the files, you expect the running servers to detect it and reload the website with the new changes. You can see in the logs that the change has indeed been detected and they have compiled the new version of the website but for some reason the frontend server is not alive anymore. An early clue that I caught was that the logs were showing the character combination ‘[?025h’ whenever this was happening. I had also noticed that whenever I stopped Reflex intentionally with a Ctrl+C,  this character combination was getting outputted as well. So the first thought was, okay somehow a Ctrl+C from somewhere was affecting the frontend server.
 
+<!--more-->
 The developer had mentioned in the issue discussion that the bug is connected to one of their upstream dependency ‘uvicorn’. Uvicorn is an ASGI web server in Python and Reflex uses Uvicorn as their backend server in development mode. Uvicorn has a reload functionality that detects the changes in the server directory and updates the server accordingly. I tested out the uvicorn server on its own and the reload functionality was working perfectly. The next thing I did was go through the reflex code and see how they were using the uvicorn server inside it. I also studied how they were spawning the frontend server as well. With this information, I created a very small mock reflex, that was using uvciorn server and a mock frontend server (a while loop printing the word “Frontend”) just the way the original reflex implemented it. In short, the frontend server was initiated as a python subprocess and the uvicorn server ran in the main thread. This mock version took away a lot of the complexities and reduced it down to simple elements so that I can zone in on where the issue is. And sure enough, when I ran it, a reload of the uvicorn server killed my mock frontend.
 
 ```python

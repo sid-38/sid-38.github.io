@@ -1,9 +1,11 @@
 ---
 layout: post
 title: Unpacking UPX
+excerpt_separator: <!--more-->
+full_excerpt: true
 ---
 
-## High level Overview of Steps to Unpack UPX dynamically
+### High level Overview of Steps to Unpack UPX dynamically
 1. Find the original entry point of the packed file
 1. Run Scylla to extract the payload out
 1. Turn on the IMAGE\_FILE\_RELOCS\_STRIPPED flag inside the extracted PE file
@@ -27,3 +29,4 @@ Running scylla is fairly well documented. If it is run as a plugin of a debugger
 
 After all of this, even though the Scylla dumped file was very similar to the original payload it was crashing on execution. To fix this, open a PE editing tool such as PEBear, or CFF Explorer and turn on the IMAGE\_FILE\_RELOCS\_STRIPPED flag.
 
+<!--more-->

@@ -7,14 +7,19 @@ layout: default
     {% if post.categories.size == 0 %}
       <article class="post">
 
-        <h1><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h1>
+        <h1 class="title"><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h1>
 
         <div class="entry">
-          {{ post.excerpt }}
+					{% if post.full_excerpt == true %}
+						{{ post.content }}
+					{% endif %}
+					{% if post.full_excerpt != true %}
+						{{ post.excerpt }}
+					{% endif %}
         </div>
-	{% if post.show_read_more != false %}
+				{% if post.full_excerpt != true %}
           <a href="{{ site.baseurl }}{{ post.url }}" class="read-more">Read More {{ post.show_read_more }}</a>
-	{% endif %}
+				{% endif %}
       </article>
     {% endif %}
   {% endfor %}
