@@ -20,6 +20,10 @@ layout: default
 				{% if post.full_excerpt != true %}
           <a href="{{ site.baseurl }}{{ post.url }}" class="read-more">Read More {{ post.show_read_more }}</a>
 				{% endif %}
+				
+				<div class="date">
+					Written on {{ post.date | date: "%B %e, %Y" }}
+				</div>
       </article>
     {% endif %}
   {% endfor %}
