@@ -162,6 +162,10 @@ img {
 
   @include mobile {
     margin-right: 0;
+    max-height: 80px;
+    opacity: 1;
+    overflow: hidden;
+    transition: max-height 0.25s ease, opacity 0.2s ease, width 0.25s ease, margin 0.2s ease;
   }
 
   img {
@@ -201,6 +205,13 @@ img {
   color: $textMuted;
   font-size: 0.82rem;
   font-weight: 400;
+
+  @include mobile {
+    max-height: 40px;
+    opacity: 1;
+    overflow: hidden;
+    transition: max-height 0.25s ease, opacity 0.2s ease, margin 0.2s ease;
+  }
 }
 
 nav {
@@ -212,6 +223,7 @@ nav {
   @include mobile {
     justify-content: center;
     flex-wrap: wrap;
+    transition: gap 0.2s ease;
   }
 
   a {
@@ -242,6 +254,61 @@ nav {
       background: $accentBg;
 
       &::after { transform: scaleX(1); }
+    }
+  }
+}
+
+// Mobile scroll-collapsed header
+@include mobile {
+  .masthead {
+    transition: padding 0.25s ease;
+  }
+
+  .wrapper-masthead.scrolled {
+    .masthead {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      text-align: left;
+      gap: 8px;
+      padding: 8px 0;
+    }
+
+    .site-avatar {
+      max-height: 0;
+      opacity: 0;
+      width: 0;
+      margin: 0;
+    }
+
+    .site-description {
+      max-height: 0;
+      opacity: 0;
+      margin: 0;
+    }
+
+    .site-info {
+      text-align: left;
+    }
+
+    .site-name {
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .site-name a {
+      font-size: 1rem;
+    }
+
+    nav {
+      justify-content: flex-end;
+      flex-wrap: nowrap;
+      gap: 0;
+
+      a {
+        padding: 4px 8px;
+        font-size: 0.8rem;
+      }
     }
   }
 }

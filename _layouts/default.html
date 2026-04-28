@@ -42,5 +42,28 @@
     </div>
 
     {% include analytics.html %}
+
+    <script>
+      (function () {
+        var masthead = document.querySelector('.wrapper-masthead');
+        var MOBILE_BREAKPOINT = 680;
+        var ticking = false;
+
+        function update() {
+          if (window.innerWidth <= MOBILE_BREAKPOINT) {
+            masthead.classList.toggle('scrolled', window.scrollY > 10);
+          } else {
+            masthead.classList.remove('scrolled');
+          }
+          ticking = false;
+        }
+
+        window.addEventListener('scroll', function () {
+          if (!ticking) { requestAnimationFrame(update); ticking = true; }
+        }, { passive: true });
+
+        window.addEventListener('resize', update);
+      })();
+    </script>
   </body>
 </html>
