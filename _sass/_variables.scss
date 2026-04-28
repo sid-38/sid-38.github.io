@@ -3,25 +3,51 @@
 // VARIABLES
 //
 
-// Colors
-$blue: #4183C4;
+// Accent (indigo)
+$accent:      #4f46e5;
+$accentDark:  #3730a3;
+$accentLight: #ede9fe;
+$accentBg:    #f5f3ff;
 
-// Grays
-$black: #000;
-$darkerGray: #222;
-$darkGray: #333;
-$gray: #666;
-$lightGray: #eee;
-$white: #fff;
+// Page backgrounds
+$bgPage: #f8fafc;
+$bgCard: #ffffff;
+
+// Text
+$textPrimary: #0f172a;
+$textSecondary: #334155;
+$textMuted: #64748b;
+$textLight: #94a3b8;
+
+// Borders
+$border: #e2e8f0;
+$borderLight: #f1f5f9;
+
+// Legacy aliases (keep for backward compat with highlights, svg-icons)
+$blue:        $accent;
+$black:       #000;
+$darkerGray:  #0f172a;
+$darkGray:    #1e293b;
+$gray:        #64748b;
+$lightGray:   #e2e8f0;
+$white:       #fff;
 
 // Font stacks
-$helvetica: Helvetica, Arial, sans-serif;
-$helveticaNeue: "Helvetica Neue", Helvetica, Arial, sans-serif;
-$georgia: Georgia, serif;
+$sansSerif:    system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+$helvetica:    $sansSerif;
+$helveticaNeue: $sansSerif;
+$georgia:      Georgia, 'Times New Roman', serif;
+$mono:         'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
 
-// Mobile breakpoints
+// Mobile breakpoint
 @mixin mobile {
-  @media screen and (max-width: 640px) {
+  @media screen and (max-width: 680px) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media screen and (max-width: 960px) {
     @content;
   }
 }
