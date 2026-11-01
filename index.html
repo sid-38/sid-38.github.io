@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sidharth Anil — Portfolio</title>
+    <meta name="description" content="Sidharth Anil: software engineering and cybersecurity. Projects, writing, sketches and poems." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Pixelify+Sans:wght@400;600&family=VT323&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body class="is-loading">
+    <canvas id="webgl" aria-hidden="true"></canvas>
+
+    <!-- Covers the page until every model, texture and font is in, so nothing pops in -->
+    <div id="loader" class="loader" role="status" aria-live="polite" aria-busy="true">
+      <div class="loader__box">
+        <p class="loader__title">sid's room</p>
+        <div class="loader__bar" aria-hidden="true"></div>
+        <p class="loader__text"><span class="loader__label">turning the lights on</span> <span class="loader__pct">0%</span></p>
+      </div>
+    </div>
+
+    <!-- Top-left: the Guide (sections with their glow colours) and the way back from a close-up -->
+    <nav class="hud" aria-label="Portfolio">
+      <div class="hud__row">
+        <button id="guide-button" class="pixel-button guide-button" type="button" aria-expanded="false" aria-controls="guide-panel">
+          <span aria-hidden="true">☰</span> guide
+        </button>
+        <button id="back-button" class="pixel-button back-button" type="button" aria-label="Back to the room">← <span class="back-button__label">back to the room</span></button>
+      </div>
+      <ul id="guide-panel" class="guide__panel" hidden></ul>
+    </nav>
+    <p class="room-hint" aria-hidden="true">drag to look around · open the <span>guide</span> to see where everything is</p>
+    <!-- Glowing dots on the clickable objects, shown while the guide is open -->
+    <div id="markers" class="markers"></div>
+    <div id="hover-label" class="hover-label" hidden aria-hidden="true"><span class="hover-label__pill"></span><span class="hover-label__text"></span></div>
+
+
+    <!-- ===== Journal (Sketches & poems). Book.js cuts this flow into pages; every chapter starts a new page. ===== -->
+    <article id="book-source" class="book-flow book-flow--source" aria-label="Sketches and poems">
+      <section class="chapter chapter--title" id="contents" data-title="Contents">
+        <p class="kicker">sketchbook</p>
+        <h1>Sketches &amp; poems</h1>
+        <p class="tagline">Things I make away from the computer.</p>
+        <h2>Contents</h2>
+        <ol class="toc">
+          <li><a href="#sketch"><span class="toc__title">A cycle (sketch)</span><span class="toc__page" data-page-of="sketch"></span></a></li>
+          <li><a href="#grief"><span class="toc__title">Grief</span><span class="toc__page" data-page-of="grief"></span></a></li>
+          <li><a href="#last-vine"><span class="toc__title">The Last Vine</span><span class="toc__page" data-page-of="last-vine"></span></a></li>
+        </ol>
+        <p class="hint">turn the page → <span class="hint__keys">scroll, arrow keys or swipe</span></p>
+      </section>
+
+      <section class="chapter" id="sketch" data-title="Sketch">
+        <h2>A cycle</h2>
+        <p class="meta">pencil on paper</p>
+        <img class="figure" src="/images/cycle.jpeg" alt="Pencil sketch of a cycle" width="1280" height="964" />
+      </section>
+
+      <section class="chapter" id="grief" data-title="Grief">
+        <h2>Grief</h2>
+        <p class="poem">It fills up inside you
+to the edge of your throat
+You can feel the cracks it makes
+on your soul
+Your breath gets heavy
+Your mind fogs up
+The strong shaky grip
+Of a long-buried grief
+Is this the only way to live,
+Alongside this war-torn neighbor?</p>
+        <p class="poem" lang="ml">താരാട്ട് പാടി ഒരു കുഞ്ഞിനെ ഉറക്കും വിധം
+വേദനകളെ ഉറക്കിയവരല്ലേ നമ്മൾ ?</p>
+      </section>
+
+      <section class="chapter" id="last-vine" data-title="The Last Vine">
+        <h2>The Last Vine</h2>
+        <p class="poem">I open my eyes as slowly as I can,
+Never liked to see the reality.
+But there are times when you have to
+Wipe your mind, for clarity.</p>
+        <p class="poem">My feet are stuck to the ground
+So comfortably still.
+The world to me is a blur
+Pacing away, full of will.</p>
+        <p class="poem">And then I decide, its time
+I'm just tired of being stuck,
+I try so hard to lift my feet
+but its just so deep in this pointless muck.</p>
+        <p class="poem">I call out to the others, as hard as I can
+At the top of my lungs I scream
+Never expected even one to care
+But they do , just like its a dream.</p>
+        <p class="poem">They try to lift me up, to pull me out
+But suddenly somehow I dont want to.
+I realize I've grown attached to
+this addiction, not letting me chase you.</p>
+        <p class="poem">You, my angel, whisper to me
+It's time for you to fly.
+I reply back, but I don't want to
+But we both know that's a lie.</p>
+        <p class="poem">I blink my eyes and I'm stunned,
+Not staying still anymore.
+I'm just falling down, the high cliff
+Paralysed to the very core.</p>
+        <p class="poem">And you throw me down, a long vine
+As always trying to save me.
+And I know I have to catch it
+As I'm falling down to the sea.</p>
+        <p class="poem">I stretch my hands to the vine,
+the last vine I'll ever get
+My eyes are quivering with panic
+And yours are just a little wet.</p>
+        <p class="poem">The roaring sea below me
+Calling out to me, to a mindless end
+But I don't want to go , I don't want to get lost
+And so my fingers reach out to the vine</p>
+        <p class="poem">To the last vine, to the last hope, fluttering in the wind.</p>
+      </section>
+
+      <section class="chapter chapter--end" id="end" data-title="">
+        <p class="kicker">the end (for now)</p>
+        <p><a href="#contents">← back to the contents</a></p>
+      </section>
+    </article>
+
+    <div id="notebook-ui" class="notebook-ui" role="region" aria-label="Journal pages">
+      <div class="spread"></div>
+      <button class="turn turn--prev" type="button" data-turn="prev" aria-label="Previous page">‹</button>
+      <button class="turn turn--next" type="button" data-turn="next" aria-label="Next page">›</button>
+    </div>
+
+    <!-- ===== Computer: Desktop.js builds the desktop from #project-data and #posts-data ===== -->
+    <div id="desktop" class="surface-ui os" role="region" aria-label="Computer: projects and blog"></div>
+
+    <!-- ===== Phone: Contact ===== -->
+    <div id="phone-ui" class="surface-ui phone" role="region" aria-label="Phone: contact">
+      <div class="phone__status"><span class="phone__time"></span><span class="phone__icons" aria-hidden="true">▂▄▆ ▮▮▮▯</span></div>
+      <div class="phone__app">
+        <img class="phone__avatar portrait" alt="" width="64" height="78" />
+        <h2 class="phone__name">Sidharth Anil</h2>
+        <p class="phone__sub">say hi — I usually reply fast</p>
+        <ul class="phone__list">
+          <li><a class="phone__row" href="mailto:sidharthanil98@gmail.com"><span class="phone__ico phone__ico--mail" aria-hidden="true">✉</span><span><b>Email</b><small>sidharthanil98@gmail.com</small></span></a></li>
+          <li><a class="phone__row" href="https://github.com/sid-38" target="_blank" rel="noopener"><span class="phone__ico phone__ico--gh" aria-hidden="true">&lt;/&gt;</span><span><b>GitHub</b><small>sid-38</small></span></a></li>
+          <li><a class="phone__row" href="https://www.linkedin.com/in/sidharthanil98" target="_blank" rel="noopener"><span class="phone__ico phone__ico--in" aria-hidden="true">in</span><span><b>LinkedIn</b><small>sidharthanil98</small></span></a></li>
+          <li><a class="phone__row" href="https://sid-38.github.io" target="_blank" rel="noopener"><span class="phone__ico phone__ico--blog" aria-hidden="true">✎</span><span><b>Blog</b><small>sid-38.github.io</small></span></a></li>
+        </ul>
+        <button class="phone__copy" type="button" data-copy="sidharthanil98@gmail.com">copy email</button>
+      </div>
+      <div class="phone__home" aria-hidden="true"></div>
+    </div>
+
+    <!-- ===== ID card: About ===== -->
+    <div id="idcard-ui" class="surface-ui idcard" role="region" aria-label="ID card: about">
+      <header class="idcard__head"><span>ID</span><span class="idcard__org">sid-38 · portfolio</span><span class="idcard__slot" aria-hidden="true"></span></header>
+      <div class="idcard__body">
+        <div class="idcard__photo"><img class="portrait" alt="Pixel portrait of Sidharth" width="64" height="78" /></div>
+        <dl class="idcard__fields">
+          <div><dt>name</dt><dd class="idcard__name">Sidharth Anil</dd></div>
+          <div><dt>role</dt><dd>Software engineer · cybersecurity</dd></div>
+          <div><dt>education</dt><dd>Master of Computer Science, Texas A&amp;M University · 2024<br />B.Tech, Computer Science &amp; Engineering, NIT Calicut · 2021</dd></div>
+          <div><dt>status</dt><dd class="idcard__status">Looking for full-time roles in software engineering or cybersecurity</dd></div>
+        </dl>
+      </div>
+      <footer class="idcard__foot"><span class="idcard__barcode" aria-hidden="true"></span><span>interests: malware analysis, ML for security, open source, sketching</span></footer>
+    </div>
+
+    <!-- Projects on the computer. data-post = the write-up (from content/posts), shown under the summary. -->
+    <ul id="project-data" hidden>
+      <li data-id="autoyara" data-title="AutoYARA in Python" data-file="AutoYARA.md" data-post="post-autoyara" data-code="https://github.com/sid-38/autoyara">
+        Reimplemented AutoYARA, which builds YARA rules for malware families with machine learning, from Java in Python.
+      </li>
+      <li data-id="offensivezoe" data-title="OffensiveZoe" data-file="OffensiveZoe.md" data-post="post-offensivezoe" data-code="https://github.com/sidbav/AV-vs-Evasive">
+        A malware detector, plus adversarial samples built to evade the other teams' detectors. First place in the attack phase.
+      </li>
+      <li data-id="reflex" data-title="Fixing a bug in Reflex" data-file="Reflex-bug.md" data-post="post-reflex-bug-fix" data-code="https://github.com/reflex-dev/reflex/issues/2335" data-code-label="the issue">
+        Tracked down why Reflex's frontend server died on hot reload on Windows with Python 3.12, and worked out the fix with the maintainers.
+      </li>
+      <li data-id="opensource" data-title="Open source contributions" data-file="open-source.md" data-post="post-open-source-contributions" data-code="https://github.com/sid-38" data-code-label="GitHub">
+        Issues and fixes in
+        <a href="https://github.com/reflex-dev/reflex/issues/2335" target="_blank" rel="noopener">reflex #2335</a>,
+        <a href="https://github.com/astral-sh/uv/issues/1980" target="_blank" rel="noopener">uv #1980</a>,
+        <a href="https://github.com/x64dbg/x64dbg/issues/3050" target="_blank" rel="noopener">x64dbg #3050</a> and
+        <a href="https://github.com/x64dbg/x64dbg/issues/3137" target="_blank" rel="noopener">x64dbg #3137</a>.
+      </li>
+    </ul>
+
+    <!-- Blog posts, rendered from content/posts/*.md at build time (vite/bookContent.js) -->
+    <div id="posts-data" hidden>
+      <!-- book:posts -->
+    </div>
+
+    <noscript>This portfolio needs JavaScript for the 3D room. The blog is at https://sid-38.github.io</noscript>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
