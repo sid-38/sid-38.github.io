@@ -690,7 +690,8 @@ html, body { height: 100%; overflow: hidden; }
 .idcard__fields dt { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #c8424f; }
 .idcard__fields dd { margin: 0; font-size: 15px; line-height: 1.35; }
 .idcard__name { font-size: 26px !important; font-weight: 600; }
-.idcard__status { display: inline-block; padding: 2px 6px; background: #ffeccf; box-shadow: 0 0 0 2px #f2b880; }
+.idcard__tags { display: flex; flex-wrap: wrap; gap: 7px 9px; margin: 3px 0 0; padding: 0 0 0 2px; list-style: none; }
+.idcard__tags li { padding: 1px 6px; font-size: 13px; background: #ffeccf; box-shadow: 0 0 0 2px #f2b880; }
 .idcard__foot { display: flex; align-items: center; gap: 18px; padding: 10px 26px 16px; font-size: 12px; color: #52618a; }
 .idcard__barcode { width: 120px; height: 28px; flex: none; background: repeating-linear-gradient(to right, #1e2742 0 2px, transparent 2px 4px, #1e2742 4px 7px, transparent 7px 9px, #1e2742 9px 10px, transparent 10px 13px); }
 
