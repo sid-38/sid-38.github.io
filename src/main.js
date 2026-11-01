@@ -98,7 +98,9 @@ const monitorScreen = desk.getObjectByName('monitor_screen');
 const phoneScreen = desk.getObjectByName('phone_screen');
 const idCardFace = desk.getObjectByName('id_card_face');
 
-rig.addShot('projects', (cam) => surfaceShot(cam, planeSurface(monitorScreen, { fill: 0.94 })));
+// maxDist: the avatar's head is ~0.9 m in front of the screen; stay well clear of it. On a
+// phone the screen then overflows sideways, but the desktop UI is shown full-width there anyway.
+rig.addShot('projects', (cam) => surfaceShot(cam, planeSurface(monitorScreen, { fill: 0.94, maxDist: 0.7 })));
 rig.addShot('contact', (cam) => surfaceShot(cam, planeSurface(phoneScreen, { fill: 0.86, tilt: 0.05 })));
 rig.addShot('about', (cam) => surfaceShot(cam, planeSurface(idCardFace, { fill: 0.8, tilt: 0.05 })));
 rig.addShot('misc', (cam) => {
@@ -356,7 +358,9 @@ resize();
 // ---- Loop -------------------------------------------------------------------------
 let last = performance.now();
 let debug = null;
-const { startSize, endSize } = CONFIG.pixel;
+const { startSize, endSize, fullSizeWidth, minStartSize } = CONFIG.pixel;
+// Room pixel size for this window: 4 on laptops and up, 3 on tablets, 2 on phones
+const roomPixelSize = () => Math.max(minStartSize, startSize * Math.min(1, viewport.width / fullSizeWidth));
 
 function tick(now) {
   const dt = Math.min((now - last) / 1000, 0.1);
@@ -375,7 +379,7 @@ function tick(now) {
 
   // Chunky pixels in the room, crisp at a close-up
   const k = THREE.MathUtils.smoothstep(rig.closeness, 0.15, 0.9);
-  pipeline.setPixelSize(debug?.pixelSize ?? Math.round(THREE.MathUtils.lerp(startSize, endSize, k)));
+  pipeline.setPixelSize(debug?.pixelSize ?? Math.round(THREE.MathUtils.lerp(roomPixelSize(), endSize, k)));
 
   updateMarkers();
 

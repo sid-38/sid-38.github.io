@@ -35,11 +35,16 @@ function distanceInsideRoom(origin, dir) {
   return Math.max(0, t);
 }
 
-export function surfaceShot(camera, { center, normal, up, width, height, fill = 0.9, tilt = 0 }) {
+/**
+ * @param maxDist never back off further than this (metres), even if the surface then overflows
+ *   the screen: keeps narrow screens from pulling the camera back through things in front
+ *   of the surface (the avatar sits in front of the monitor)
+ */
+export function surfaceShot(camera, { center, normal, up, width, height, fill = 0.9, tilt = 0, maxDist = Infinity }) {
   const halfTan = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
   const distH = height / (fill * 2 * halfTan);
   const distW = width / (fill * 2 * halfTan * camera.aspect);
-  const dist = Math.max(distH, distW);
+  const dist = Math.min(Math.max(distH, distW), maxDist);
   // Lean back a touch toward the reader's side (away from the surface's "up") if tilted
   const dir = normal.clone().multiplyScalar(Math.cos(tilt)).addScaledVector(up, -Math.sin(tilt)).normalize();
   const pos = center.clone().addScaledVector(dir, dist);

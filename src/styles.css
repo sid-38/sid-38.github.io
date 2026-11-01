@@ -423,25 +423,29 @@ html, body { height: 100%; overflow: hidden; }
   background-repeat: no-repeat;
 }
 .marker__glow {
-  width: 64px;
-  height: 64px;
+  width: var(--glow-size);
+  height: var(--glow-size);
   background-image: var(--glow);
   background-size: 100% 100%;
   animation: glow-pulse 1.2s steps(1) infinite;
   transition: scale 0.15s steps(2);
 }
 .marker__ripple {
-  width: 96px;
-  height: 96px;
+  width: var(--ripple-size);
+  height: var(--ripple-size);
   background-image: var(--ripple);
-  background-size: 768px 96px; /* 8 frames */
+  background-size: calc(var(--ripple-size) * 8) var(--ripple-size); /* 8 frames */
   animation: ripple-frames 1.6s steps(8) infinite;
 }
 .marker__ripple--late { animation-delay: -0.8s; }
 .marker.is-hot .marker__glow, .marker:focus-visible .marker__glow { scale: 1.5; }
 .marker:focus-visible { outline: none; }
-@keyframes ripple-frames { to { background-position: -768px 0; } }
+@keyframes ripple-frames { to { background-position: calc(var(--ripple-size) * -8) 0; } }
 @keyframes glow-pulse { 50% { opacity: 0.7; } }
+/* Sprites are 16 px (glow) and 24 px (ripple frames): 4× on big screens, 2× on phones so the dots
+   don't cover the objects. Whole-number scales keep the pixels crisp. */
+.markers { --glow-size: 64px; --ripple-size: 96px; }
+@media (max-width: 700px) { .markers { --glow-size: 32px; --ripple-size: 48px; } }
 
 .hover-label {
   position: fixed;

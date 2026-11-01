@@ -3,9 +3,13 @@
 export const CONFIG = {
   // ---- Pixel-art look -------------------------------------------------------
   pixel: {
-    // Size of one "art pixel" in screen pixels on the landing shot.
-    // The camera dive ramps this down to 1 so the notebook arrives crisp.
+    // Size of one "art pixel" in screen pixels in the room, on a window at least
+    // `fullSizeWidth` wide. Narrower screens use proportionally smaller pixels (never below
+    // `minStartSize`) so a phone gets about as much detail per object as a laptop.
+    // Close-ups ramp it down to `endSize` so screens and cards arrive crisp.
     startSize: 4,
+    fullSizeWidth: 1000,
+    minStartSize: 2,
     endSize: 1,
     outline: true,
     outlineStrength: 0.55, // how much edges get darkened (0..1)
