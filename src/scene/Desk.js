@@ -39,6 +39,7 @@ export function createDesk() {
   screen.position.set(-0.021, 0.14 + 0.19, 0);
   screen.rotation.y = -Math.PI / 2;
   screen.userData.update = screenTex.update;
+  screen.userData.screen = screenTex; // setMode('code' | 'video'), tint
   monitor.add(screen);
   g.add(place(monitor, DESK.x + 0.22, top, -0.45));
 
@@ -73,8 +74,8 @@ export function createDesk() {
   g.add(place(mug, DESK.x + 0.33, top + 0.045, 0.12));
   g.add(createLamp());
 
-  // Far end: water bottle in front of the PC tower, on the avatar's left
-  g.add(place(createWaterBottle(), DESK.x - 0.28, top, -1.2));
+  // Water bottle on the avatar's left, within reach (he drinks from it, see AvatarMoves.js)
+  g.add(place(createWaterBottle(), DESK.x - 0.34, top, -0.92));
   // ID badge (About) beside the bottle, lanyard curling toward the back of the desk
   g.add(place(createIdCard(), DESK.x - 0.19, top, -1.245, -0.1));
 
@@ -198,6 +199,7 @@ function createWaterBottle() {
   g.add(cap);
   const loop = new THREE.Mesh(new THREE.TorusGeometry(0.014, 0.004, 6, 12, Math.PI), black);
   loop.position.y = H + 0.028;
+  loop.name = 'water_bottle_loop'; // hidden while the cap is off (see AvatarMoves.js)
   g.add(loop);
   return g;
 }
@@ -315,7 +317,12 @@ function createLamp() {
   return place(g, DESK.x + 0.3, DESK.height, 0.3, -0.5);
 }
 
-/** Tiny fake code editor drawn on a canvas. Updated at a low rate. */
+/**
+ * The monitor's picture: a tiny fake code editor while he types, or a vague video (a few looping
+ * scenes with a progress bar under them) while he's leaned back watching. Drawn on a small
+ * canvas at a low frame rate. `setMode('code' | 'video')` switches; `tint` is roughly the colour
+ * the screen is throwing on his face.
+ */
 function createScreenTexture() {
   const W = 160, H = 90;
   const canvas = document.createElement('canvas');
@@ -327,7 +334,9 @@ function createScreenTexture() {
   texture.magFilter = THREE.NearestFilter;
   texture.minFilter = THREE.NearestFilter;
   texture.generateMipmaps = false;
+  const tint = new THREE.Color(0xbcc8e0);
 
+  // ---- Code editor ----
   const colors = ['#7af0ff', '#d05fd8', '#ffd7a3', '#93a3c6', '#6f9b6c'];
   const lines = Array.from({ length: 40 }, () => ({
     indent: Math.floor(Math.random() * 4) * 8,
@@ -337,9 +346,7 @@ function createScreenTexture() {
     })),
   }));
   let offset = 0;
-  let acc = 0;
-
-  const draw = () => {
+  const drawCode = () => {
     ctx.fillStyle = '#141a2e';
     ctx.fillRect(0, 0, W, H);
     ctx.fillStyle = '#1e2742';
@@ -356,15 +363,113 @@ function createScreenTexture() {
     // cursor
     ctx.fillStyle = '#e6ecf5';
     ctx.fillRect(30 + (offset % 7) * 6, 4 + 13 * 6, 3, 4);
+  };
+
+  // ---- Video: a few scenes made of flat shapes drifting, cutting every few seconds ----
+  const TOP = 6, BOTTOM = 76; // the picture, letterboxed
+  const ph = BOTTOM - TOP;
+  const hills = (time, speed, y, amp, colour, seed) => {
+    ctx.fillStyle = colour;
+    for (let x = 0; x < W; x += 2) {
+      const u = (x + time * speed) * 0.05 + seed;
+      const top = y + Math.sin(u) * amp + Math.sin(u * 2.3 + seed) * amp * 0.4;
+      ctx.fillRect(x, TOP + top, 2, ph - top);
+    }
+  };
+  const SCENES = [
+    { // sunset over rolling hills, panning slowly
+      tint: 0xd59a8a,
+      draw(time) {
+        ['#5c4a6e', '#8a2b3a', '#d05fd8', '#f2b880', '#ffd7a3'].forEach((c, i) => { ctx.fillStyle = c; ctx.fillRect(0, TOP + i * 9, W, 9); });
+        ctx.fillStyle = '#ffeccf';
+        ctx.beginPath(); ctx.arc(110, TOP + 40, 11, 0, Math.PI * 2); ctx.fill();
+        hills(time, 6, 36, 5, '#3a2c33', 1);
+        hills(time, 14, 46, 6, '#2a1d1a', 4);
+        hills(time, 26, 56, 4, '#141a2e', 9);
+      },
+    },
+    { // night drive past a city
+      tint: 0x6e7fa8,
+      draw(time) {
+        ctx.fillStyle = '#0b0e1a'; ctx.fillRect(0, TOP, W, ph);
+        for (let i = 0; i < 9; i++) {
+          const bw = 18 + ((i * 37) % 14);
+          const x = (((i * 26 - time * 18) % (W + 40)) + W + 40) % (W + 40) - 20;
+          const bh = 20 + ((i * 53) % 26);
+          ctx.fillStyle = i % 2 ? '#1e2742' : '#2b3757';
+          ctx.fillRect(x, TOP + 52 - bh, bw, bh);
+          ctx.fillStyle = '#ffd7a3';
+          for (let wy = TOP + 56 - bh; wy < TOP + 48; wy += 6) {
+            for (let wx = 3; wx < bw - 3; wx += 5) if ((wx * 7 + wy * 3 + i) % 3 === 0) ctx.fillRect(x + wx, wy, 2, 2);
+          }
+        }
+        ctx.fillStyle = '#141a2e'; ctx.fillRect(0, TOP + 52, W, ph - 52);
+        ctx.fillStyle = '#e6ecf5';
+        for (let x = -((time * 60) % 24); x < W; x += 24) ctx.fillRect(x, TOP + 61, 10, 2);
+      },
+    },
+    { // open sea with a little boat bobbing
+      tint: 0x7ab4d8,
+      draw(time) {
+        ctx.fillStyle = '#9cd2f2'; ctx.fillRect(0, TOP, W, 30);
+        ctx.fillStyle = '#e6ecf5';
+        const cx = ((time * 4) % (W + 40)) - 20;
+        ctx.fillRect(cx, TOP + 8, 22, 4); ctx.fillRect(cx + 5, TOP + 5, 12, 3);
+        ctx.fillStyle = '#3fb8d8'; ctx.fillRect(0, TOP + 30, W, ph - 30);
+        ctx.fillStyle = '#7af0ff';
+        for (let r = 0; r < 5; r++) {
+          for (let x = -((time * (8 + r * 4)) % 20); x < W; x += 20) ctx.fillRect(x + r * 7, TOP + 34 + r * 7, 8, 1);
+        }
+        const by = TOP + 30 + Math.round(Math.sin(time * 2) * 2);
+        ctx.fillStyle = '#c8424f'; ctx.fillRect(66, by - 2, 26, 5);
+        ctx.fillStyle = '#e6ecf5'; ctx.fillRect(77, by - 16, 2, 14); ctx.fillRect(79, by - 14, 9, 10);
+      },
+    },
+  ];
+  const SCENE_TIME = 7;
+  const VIDEO_LENGTH = 180; // the progress bar fills over this, then starts again
+  let videoTime = Math.random() * VIDEO_LENGTH;
+  const drawVideo = () => {
+    ctx.fillStyle = '#0b0e1a';
+    ctx.fillRect(0, 0, W, H);
+    const scene = SCENES[Math.floor(videoTime / SCENE_TIME) % SCENES.length];
+    scene.draw(videoTime);
+    tint.setHex(scene.tint);
+    // Player controls: progress bar with its handle, pause icon, time, settings / fullscreen
+    const f = (videoTime % VIDEO_LENGTH) / VIDEO_LENGTH;
+    ctx.fillStyle = '#3c4a6e'; ctx.fillRect(6, 80, W - 12, 2);
+    ctx.fillStyle = '#c8424f'; ctx.fillRect(6, 80, (W - 12) * f, 2);
+    ctx.fillRect(6 + (W - 12) * f - 1, 79, 3, 4);
+    ctx.fillStyle = '#93a3c6';
+    ctx.fillRect(6, 85, 2, 3); ctx.fillRect(9, 85, 2, 3);
+    ctx.fillRect(16, 86, 14, 2);
+    ctx.fillRect(W - 20, 86, 6, 2); ctx.fillRect(W - 12, 85, 6, 3);
+  };
+
+  let mode = 'code';
+  let acc = 0;
+  const draw = () => {
+    if (mode === 'video') drawVideo();
+    else { drawCode(); tint.setHex(0xbcc8e0); }
     texture.needsUpdate = true;
   };
   draw();
 
   return {
     texture,
+    tint,
+    get mode() { return mode; },
+    setMode(m) {
+      if (m === mode) return;
+      mode = m;
+      draw();
+    },
     update: (dt) => {
       acc += dt;
-      if (acc > 0.6) {
+      if (mode === 'video') {
+        videoTime += dt;
+        if (acc > 0.1) { acc = 0; draw(); }
+      } else if (acc > 0.6) {
         acc = 0;
         offset++;
         draw();

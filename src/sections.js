@@ -11,8 +11,11 @@ export const SECTIONS = [
   { id: 'window', label: 'Day / night', where: 'the window', color: '#b48cff', toggle: true },
   // Also in place: clicking the speaker starts or stops the music
   { id: 'music', label: 'Music', where: 'the speaker', color: '#ff7ac6', toggle: true },
+  // Found by hovering, not listed in the guide. The avatar's label changes with what he's doing.
+  { id: 'avatar', label: 'Take a break', where: 'Sid', color: '#ffd7a3', toggle: true, guide: false },
+  { id: 'bottle', label: 'Water break', where: 'the bottle', color: '#7af0ff', toggle: true, guide: false },
 ];
 
 export const sectionById = Object.fromEntries(SECTIONS.map((s) => [s.id, s]));
-/** The sections people can reach: what the guide lists and the room lets you click */
-export const VISIBLE_SECTIONS = SECTIONS.filter((s) => !s.hidden);
+/** What the guide lists (and puts a glowing dot on) */
+export const VISIBLE_SECTIONS = SECTIONS.filter((s) => !s.hidden && s.guide !== false);

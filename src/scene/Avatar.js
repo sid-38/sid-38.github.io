@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { box, place, toon, glow, C } from '../utils/materials.js';
 import { loadModel } from '../utils/models.js';
+import { AvatarMoves } from './AvatarMoves.js';
 
 // Gray-box stand-ins for the chair and the avatar.
 // Each exposes update(time) so it can later be replaced by a GLB + AnimationMixer
@@ -161,13 +162,26 @@ export class Avatar {
     const typing = this.clips.sit_typing ?? gltf.animations[0];
     if (typing) this.mixer.clipAction(typing).play();
     this.clip = typing;
+    this.moves = new AvatarMoves(this.group);
+    if (this._bottle) this.moves.setBottle(this._bottle);
+  }
+
+  /** The desk's water bottle, which he reaches for now and then */
+  setBottle(bottle) {
+    this._bottle = bottle;
+    this.moves?.setBottle(bottle);
   }
 
   /** @param t stepped time in seconds */
   update(t) {
     if (this.mixer) {
       // drive the clip from the stepped clock so it animates at the same 12 fps as everything else
+      this.moves?.restore();
       this.mixer.setTime(this.clip ? t % this.clip.duration : t);
+      if (this.moves) {
+        this.group.updateMatrixWorld(true);
+        this.moves.apply(t);
+      }
       return;
     }
     if (this.state !== 'working') return;

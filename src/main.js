@@ -5,7 +5,7 @@ import { createRoom, ROOM } from './scene/Room.js';
 import { createDesk, loadDeskModel, drawIdCardFace } from './scene/Desk.js';
 import { Notebook, PAGE } from './scene/Notebook.js';
 import { createChair, Avatar } from './scene/Avatar.js';
-import { createLighting } from './scene/Lighting.js';
+import { createLighting, LIGHT_PRESETS } from './scene/Lighting.js';
 import { PixelPipeline } from './render/PixelPipeline.js';
 import { CameraRig, surfaceShot, planeSurface, planeCorners } from './camera/CameraRig.js';
 import { NotebookUI } from './ui/NotebookUI.js';
@@ -57,8 +57,16 @@ const chairReady = swapWithModel(chair, `${BASE}chair.glb`).catch(keep('Chair mo
 const avatar = new Avatar();
 scene.add(avatar.group);
 const avatarReady = avatar.loadModel(`${BASE}avatar.glb`)
-  .then(() => renderPortrait())
+  .then(() => {
+    renderPortrait();
+    // ?move=lean keeps him leaned back; ?move=drink has him drink over and over (for tuning)
+    const move = params.get('move');
+    if (avatar.moves && (move === 'lean' || move === 'drink')) avatar.moves.forced = move;
+    avatar.moves?.onChange(onAvatarState);
+    if (avatar.moves) avatar.moves.beat = () => radio.beatPhase; // he grooves along when music is on
+  })
   .catch(keep('Avatar model'));
+avatar.setBottle(desk.getObjectByName('water_bottle'));
 const assetsReady = [roomReady, deskReady, propsReady, notebookReady, chairReady, avatarReady];
 const lighting = createLighting(scene);
 
@@ -142,10 +150,29 @@ hotspots.add('about', desk.getObjectByName('id_card'), [0.115, 0.012, 0.08], [0,
 hotspots.add('window', room, [1.8, 1.2, 0.4], [0, 1.6, ROOM.backZ], [-0.42, 1.88, ROOM.backZ]);
 const speaker = room.getObjectByName('speaker');
 hotspots.add('music', speaker, [0.26, 0.36, 0.26], [0, 0.16, 0]);
+// Sid himself (switch between typing and watching) and his water bottle (have a sip).
+// Not in the guide; you find them by hovering.
+hotspots.add('avatar', room, [0.42, 0.72, 0.44], [0.27, 1.0, -0.45]);
+hotspots.add('bottle', desk.getObjectByName('water_bottle'), [0.1, 0.27, 0.1], [0, 0.12, 0]);
+
+// ---- What he's doing: typing, or leaned back watching something --------------------------
+// The monitor shows code or a video to match, and its glow on his face takes the video's colour.
+const monitorPicture = monitorScreen.userData.screen;
+function onAvatarState(state) {
+  monitorPicture.setMode(state === 'watching' ? 'video' : 'code');
+  sectionById.avatar.label = state === 'watching' ? 'Back to work' : 'Take a break';
+}
+const _tint = new THREE.Color();
+function updateMonitorGlow() {
+  const base = _tint.set(LIGHT_PRESETS[lighting.mode].monitor);
+  if (monitorPicture.mode === 'video') base.lerp(monitorPicture.tint, 0.7);
+  lighting.lights.monitor.color.copy(base);
+}
 
 // ---- Music: the speaker plays a lo-fi track on loop -------------------------------------
 // "Chill Lofi" by zephiramusic, from Pixabay (free to use under the Pixabay Content License).
-const radio = new Radio(`${import.meta.env.BASE_URL}audio/chill-lofi.mp3`);
+// 70.7 bpm with the first beat 0.07 s in, found by looking for the kick drum's period in the file
+const radio = new Radio(`${import.meta.env.BASE_URL}audio/chill-lofi.mp3`, { bpm: 70.69, offset: 0.069 });
 const nowPlaying = document.getElementById('now-playing');
 const nowPlayingButton = nowPlaying.querySelector('.now-playing__toggle');
 radio.onChange((on) => {
@@ -173,6 +200,8 @@ function activate(id) {
   if (sectionById[id]?.toggle) {
     if (id === 'window') toggleMode();
     if (id === 'music') radio.toggle();
+    if (id === 'avatar') avatar.moves?.toggle();
+    if (id === 'bottle') avatar.moves?.drink();
     return;
   }
   rig.go(id);
@@ -341,7 +370,11 @@ function renderPortrait() {
     if (!head && o.isBone && /head/i.test(o.name) && !/top|end|tip/i.test(o.name)) head = o;
   });
   if (!head) return;
+  // Typing pose for the photo, whatever he's doing right now
+  const moves = avatar.moves;
+  if (moves) moves.debugPose = {};
   avatar.update(0.4);
+  if (moves) { moves.debugPose = null; moves.last = null; }
   scene.updateMatrixWorld(true);
   const hp = head.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.035, 0));
   const W = 46, H = 56;
@@ -411,6 +444,7 @@ function tick(now) {
 
   updateMarkers();
   updateSpeaker(dt);
+  updateMonitorGlow();
 
   journal.update(uiAmount.misc.v, viewport);
   for (const [id, surface] of Object.entries(surfaces)) surface.update(uiAmount[id].v, viewport, camera);
@@ -460,6 +494,6 @@ requestAnimationFrame(tick);
 if (params.has('debug')) {
   import('./utils/debug.js').then(({ createDebug }) => {
     debug = createDebug({ scene, camera, renderer, pipeline, lighting, setMode, canvas });
-    window.__portfolio = { scene, camera, debug, lighting, rig, radio, book: journal.book }; // handy in the browser console
+    window.__portfolio = { THREE, scene, camera, debug, lighting, rig, radio, avatar, book: journal.book }; // handy in the browser console
   });
 }

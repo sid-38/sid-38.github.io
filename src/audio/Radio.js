@@ -4,8 +4,14 @@
 // through an <audio> element, so it streams instead of being decoded into memory all at once,
 // and through Web Audio so the scene can read how loud the beat is (`level`) and pulse to it.
 export class Radio {
-  constructor(src) {
+  /**
+   * @param src the track
+   * @param beat { bpm, offset }: its tempo and where the first beat falls (seconds), so the
+   *   avatar can tap along (measured from the file's kick drum)
+   */
+  constructor(src, beat = null) {
     this.src = src;
+    this.beatInfo = beat;
     this.audio = null;
     this.ctx = null;
     this.gain = null;
@@ -76,6 +82,17 @@ export class Radio {
     g.cancelScheduledValues(now);
     g.setValueAtTime(g.value, now);
     g.linearRampToValueAtTime(to, now + seconds);
+  }
+
+  /**
+   * Where the music is within its current beat, 0 (on the beat) … 1, or null when it isn't
+   * playing. Read off the track's own clock, stepped at 12 fps like the animation.
+   */
+  get beatPhase() {
+    if (!this.playing || !this.beatInfo || !this.audio || this.audio.paused) return null;
+    const time = Math.floor(this.audio.currentTime * 12) / 12;
+    const beats = ((time - this.beatInfo.offset) * this.beatInfo.bpm) / 60;
+    return ((beats % 1) + 1) % 1;
   }
 
   /** How hard the beat is hitting right now, 0..1. Updated by `update(dt)` once a frame. */
