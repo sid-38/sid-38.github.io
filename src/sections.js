@@ -9,6 +9,8 @@ export const SECTIONS = [
   { id: 'contact', label: 'Contact', where: 'the phone', color: '#4fd2f0' },
   // Not a close-up: clicking the window switches between day and night
   { id: 'window', label: 'Day / night', where: 'the window', color: '#b48cff', toggle: true },
+  // Also in place: clicking the speaker starts or stops the music
+  { id: 'music', label: 'Music', where: 'the speaker', color: '#ff7ac6', toggle: true },
 ];
 
 export const sectionById = Object.fromEntries(SECTIONS.map((s) => [s.id, s]));

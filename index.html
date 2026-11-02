@@ -39,6 +39,12 @@
     <!-- Glowing dots on the clickable objects, shown while the guide is open -->
     <div id="markers" class="markers"></div>
     <div id="hover-label" class="hover-label" hidden aria-hidden="true"><span class="hover-label__pill"></span><span class="hover-label__text"></span></div>
+    <!-- Top-right, from the first time the speaker is clicked: what's playing, with pause/play -->
+    <div id="now-playing" class="now-playing" hidden>
+      <span class="now-playing__bars" aria-hidden="true"><i></i><i></i><i></i></span>
+      <p class="now-playing__text"><span class="now-playing__title">chill lofi</span> <span class="now-playing__by">zephiramusic · pixabay</span></p>
+      <button class="pixel-button now-playing__toggle" type="button" aria-label="Pause the music">❚❚</button>
+    </div>
 
 
     <!-- ===== Journal (Sketches & poems). Book.js cuts this flow into pages; every chapter starts a new page. ===== -->

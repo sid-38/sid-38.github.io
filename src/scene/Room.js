@@ -166,7 +166,10 @@ function createCabinet() {
   g.name = 'cabinet';
   g.add(box(1.5, 0.6, 0.42, toon(C.metal), 'cabinet_body'));
   g.add(place(box(0.22, 0.32, 0.22, toon(C.plastic), 'speaker'), -0.55, 0.6, 0));
-  g.add(place(new THREE.Mesh(new THREE.TorusGeometry(0.06, 0.012, 6, 16), glow(0x7a3fa8)), -0.55, 0.78, 0.115));
+  // The speaker's glowing ring (its own material: it pulses to the music, see main.js)
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.06, 0.012, 6, 16), glow(0x7a3fa8).clone());
+  ring.name = 'speaker_ring';
+  g.add(place(ring, -0.55, 0.78, 0.115));
   g.add(place(box(0.34, 0.08, 0.22, toon(C.plastic), 'console'), -0.1, 0.6, 0));
   g.add(place(box(0.2, 0.012, 0.01, glow(0xc8424f), 'console_led'), -0.1, 0.63, 0.11));
   g.add(place(box(0.16, 0.04, 0.1, toon(0x52618a), 'controller'), 0.35, 0.6, 0.02, 0.4));

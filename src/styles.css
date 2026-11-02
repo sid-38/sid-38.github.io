@@ -64,7 +64,7 @@ html, body { height: 100%; overflow: hidden; }
 .loader__pct { color: #ffd7a3; }
 .loader__label::after { content: ''; animation: loader-dots 1.2s steps(4) infinite; }
 @keyframes loader-dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
-.is-loading .hud, .is-loading .room-hint { visibility: hidden; }
+.is-loading .hud, .is-loading .room-hint, .is-loading .now-playing { visibility: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .loader { transition: none; }
   .loader__label::after { animation: none; content: '...'; }
@@ -445,7 +445,13 @@ html, body { height: 100%; overflow: hidden; }
 /* Sprites are 16 px (glow) and 24 px (ripple frames): 4× on big screens, 2× on phones so the dots
    don't cover the objects. Whole-number scales keep the pixels crisp. */
 .markers { --glow-size: 64px; --ripple-size: 96px; }
-@media (max-width: 700px) { .markers { --glow-size: 32px; --ripple-size: 48px; } }
+@media (max-width: 700px) {
+  .markers { --glow-size: 32px; --ripple-size: 48px; }
+  /* On phones the guide covers half the room: see-through, so the glowing objects show under it */
+  .guide__panel { background: rgba(20, 26, 46, 0.45); box-shadow: 0 0 0 2px rgba(82, 97, 138, 0.8); }
+  .guide__item { text-shadow: 0 1px 0 #0b0e1a, 0 0 6px #0b0e1a; }
+  .guide__item:hover, .guide__item:focus-visible { background: rgba(30, 39, 66, 0.6); }
+}
 
 .hover-label {
   position: fixed;
@@ -718,4 +724,40 @@ html, body { height: 100%; overflow: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
   .guide__pill, .marker__ripple, .marker__glow { animation: none; }
+}
+
+/* ---- Now playing (top right, once the speaker has been clicked) ---- */
+.now-playing {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 6px 6px 12px;
+  font-family: 'Pixelify Sans', monospace;
+  color: #e6ecf5;
+  background: #141a2e;
+  box-shadow: 0 0 0 2px #52618a, 0 4px 0 2px #0b0e1a;
+}
+.now-playing[hidden] { display: none; }
+.now-playing__text { margin: 0; display: flex; flex-direction: column; line-height: 1.15; }
+.now-playing__title { font-size: 15px; letter-spacing: 0.06em; }
+.now-playing__by { font-size: 11px; color: #93a3c6; }
+.now-playing__toggle { font-size: 12px; min-width: 2.6em; padding: 0.45em 0.6em; }
+/* Three little equaliser bars, chunky steps like the rest of the room */
+.now-playing__bars { display: flex; align-items: flex-end; gap: 2px; height: 14px; }
+.now-playing__bars i { width: 4px; height: 4px; background: #ff7ac6; }
+.is-playing .now-playing__bars i { animation: eq 0.9s steps(3) infinite; }
+.is-playing .now-playing__bars i:nth-child(2) { animation-delay: -0.3s; }
+.is-playing .now-playing__bars i:nth-child(3) { animation-delay: -0.6s; }
+@keyframes eq { 0%, 100% { height: 4px; } 33% { height: 14px; } 66% { height: 8px; } }
+@media (max-width: 600px) {
+  /* Just the bars and the button: the title would crowd the guide button */
+  .now-playing { top: 20px; right: 16px; gap: 8px; padding: 4px 4px 4px 10px; }
+  .now-playing__text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-playing .now-playing__bars i { animation: none; height: 10px; }
 }

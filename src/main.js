@@ -14,6 +14,7 @@ import { Desktop, DESKTOP_SIZE } from './ui/Desktop.js';
 import { Hotspots, Guide, markerSprites } from './ui/Guide.js';
 import { SECTIONS, VISIBLE_SECTIONS, sectionById } from './sections.js';
 import { swapWithModel, swapParts, onModelProgress } from './utils/models.js';
+import { Radio } from './audio/Radio.js';
 
 const params = new URLSearchParams(location.search);
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -139,12 +140,39 @@ hotspots.add('about', desk.getObjectByName('id_card'), [0.115, 0.012, 0.08], [0,
 // The whole window opening, deep enough to include the frame and curtains.
 // Its dot sits in the upper-left pane, where the avatar's head never covers it.
 hotspots.add('window', room, [1.8, 1.2, 0.4], [0, 1.6, ROOM.backZ], [-0.42, 1.88, ROOM.backZ]);
+const speaker = room.getObjectByName('speaker');
+hotspots.add('music', speaker, [0.26, 0.36, 0.26], [0, 0.16, 0]);
+
+// ---- Music: the speaker plays a lo-fi track on loop -------------------------------------
+// "Chill Lofi" by zephiramusic, from Pixabay (free to use under the Pixabay Content License).
+const radio = new Radio(`${import.meta.env.BASE_URL}audio/chill-lofi.mp3`);
+const nowPlaying = document.getElementById('now-playing');
+const nowPlayingButton = nowPlaying.querySelector('.now-playing__toggle');
+radio.onChange((on) => {
+  document.body.classList.toggle('is-playing', on);
+  nowPlaying.hidden = false; // shown from the first play on, so it can be restarted from here too
+  nowPlayingButton.textContent = on ? '❚❚' : '▶';
+  nowPlayingButton.setAttribute('aria-label', on ? 'Pause the music' : 'Play the music');
+});
+nowPlayingButton.addEventListener('click', () => radio.toggle());
+// The ring glows brighter and the speaker thumps on each beat
+const speakerRing = room.getObjectByName('speaker_ring');
+const RING_IDLE = new THREE.Color(0x7a3fa8);
+const RING_BEAT = new THREE.Color(0xd05fd8);
+function updateSpeaker(dt) {
+  radio.update(dt);
+  const v = reducedMotion ? (radio.playing ? 0.5 : 0) : radio.level;
+  speakerRing.material.color.lerpColors(RING_IDLE, RING_BEAT, v);
+  speakerRing.scale.setScalar(1 + v * 0.25);
+  speaker.scale.set(1 + v * 0.04, 1 + v * 0.06, 1 + v * 0.04);
+}
 
 // Clicking a section: fly to its close-up, or for the window, flip day/night
 function activate(id) {
   guide.toggle(false);
   if (sectionById[id]?.toggle) {
     if (id === 'window') toggleMode();
+    if (id === 'music') radio.toggle();
     return;
   }
   rig.go(id);
@@ -382,6 +410,7 @@ function tick(now) {
   pipeline.setPixelSize(debug?.pixelSize ?? Math.round(THREE.MathUtils.lerp(roomPixelSize(), endSize, k)));
 
   updateMarkers();
+  updateSpeaker(dt);
 
   journal.update(uiAmount.misc.v, viewport);
   for (const [id, surface] of Object.entries(surfaces)) surface.update(uiAmount[id].v, viewport, camera);
@@ -431,6 +460,6 @@ requestAnimationFrame(tick);
 if (params.has('debug')) {
   import('./utils/debug.js').then(({ createDebug }) => {
     debug = createDebug({ scene, camera, renderer, pipeline, lighting, setMode, canvas });
-    window.__portfolio = { scene, camera, debug, lighting, rig, book: journal.book }; // handy in the browser console
+    window.__portfolio = { scene, camera, debug, lighting, rig, radio, book: journal.book }; // handy in the browser console
   });
 }
