@@ -86,7 +86,6 @@ export class Desktop {
         doc.className = 'os-doc';
         const links = [
           p.code ? `<a href="${p.code}" target="_blank" rel="noopener">${p.codeLabel} ↗</a>` : '',
-          post ? `<a href="${post.url}" target="_blank" rel="noopener">on the blog ↗</a>` : '',
         ].filter(Boolean).join(' · ');
         doc.innerHTML = `
           <h1>${p.title}</h1>
@@ -94,7 +93,7 @@ export class Desktop {
           <p class="os-doc__links">${links}</p>
           ${post ? `<hr><p class="os-doc__meta">write-up · ${post.date}</p><article class="os-post">${post.html}</article>` : ''}`;
         return doc;
-      }, { x: 230 + (this.windows.size % 3) * 24, y: 20 + (this.windows.size % 3) * 18, w: 620, h: 470 });
+      }, { x: 230 + (this.windows.size % 3) * 24, y: 20 + (this.windows.size % 3) * 18, w: 620, h: 470, read: post?.url });
     } else if (kind === 'blog') {
       this.window('blog', 'Blog — sid-38.github.io', ICONS.blog, () => this.browser(), { x: 170, y: 24, w: 680, h: 470 });
     } else if (kind === 'readme') {
@@ -122,6 +121,7 @@ export class Desktop {
     const showList = () => {
       url.textContent = 'sid-38.github.io';
       back.disabled = true;
+      this.setRead('blog', null);
       page.innerHTML = `<h1>Sidharth's blog</h1><ul class="os-postlist">${[...this.posts.values()].map((p) => `
         <li><button type="button" data-post="${p.id}"><span>${p.title}</span><span class="os-date">${p.date}</span></button></li>`).join('')}</ul>`;
       page.scrollTop = 0;
@@ -130,7 +130,8 @@ export class Desktop {
       const p = this.posts.get(id);
       url.textContent = p.url.replace('https://', '');
       back.disabled = false;
-      page.innerHTML = `<h1>${p.title}</h1><p class="os-doc__meta">${p.date} · <a href="${p.url}" target="_blank" rel="noopener">open on the blog ↗</a></p><article class="os-post">${p.html}</article>`;
+      this.setRead('blog', p.url);
+      page.innerHTML = `<h1>${p.title}</h1><p class="os-doc__meta">${p.date}</p><article class="os-post">${p.html}</article>`;
       page.scrollTop = 0;
     };
     el.addEventListener('click', (e) => {
@@ -142,7 +143,11 @@ export class Desktop {
     return el;
   }
 
-  window(id, title, icon, build, { x, y, w, h }) {
+  /**
+   * A window. `read`: the article's page on the plain site, linked from the title bar
+   * ("un-pixelate") so it can be read in proper fonts in a new tab.
+   */
+  window(id, title, icon, build, { x, y, w, h, read = null }) {
     let win = this.windows.get(id);
     if (!win) {
       const el = document.createElement('section');
@@ -150,6 +155,7 @@ export class Desktop {
       el.style.cssText = `left:${x}px;top:${y}px;width:${w}px;height:${Math.min(h, H - BAR - y - 4)}px`;
       el.innerHTML = `
         <header class="os-win__bar"><span class="os-win__icon">${icon}</span><span class="os-win__title"></span>
+          <a class="os-win__read" target="_blank" rel="noopener" hidden title="Read this in a new tab, in normal fonts">un-pixelate <span aria-hidden="true">↗</span></a>
           <button class="os-win__btn" type="button" aria-label="Close">×</button></header>
         <div class="os-win__body"></div>`;
       el.querySelector('.os-win__title').textContent = title;
@@ -161,6 +167,7 @@ export class Desktop {
       task.querySelector('span').textContent = title;
       win = { el, task };
       this.windows.set(id, win);
+      this.setRead(id, read);
       this.layer.append(el);
       this.tasks.append(task);
       el.querySelector('.os-win__btn').addEventListener('click', () => this.close(id));
@@ -169,6 +176,14 @@ export class Desktop {
       this.makeDraggable(el);
     }
     this.raise(id);
+  }
+
+  /** Show the title bar's "un-pixelate" link for this url, or hide it (null) */
+  setRead(id, url) {
+    const link = this.windows.get(id)?.el.querySelector('.os-win__read');
+    if (!link) return;
+    link.hidden = !url;
+    if (url) link.href = url;
   }
 
   raise(id) {
@@ -192,7 +207,7 @@ export class Desktop {
   makeDraggable(el) {
     const bar = el.querySelector('.os-win__bar');
     bar.addEventListener('pointerdown', (e) => {
-      if (e.target.closest('button') || this.root.classList.contains('is-compact')) return;
+      if (e.target.closest('button, a') || this.root.classList.contains('is-compact')) return;
       e.preventDefault();
       bar.setPointerCapture(e.pointerId);
       const start = { x: e.clientX, y: e.clientY, left: el.offsetLeft, top: el.offsetTop };

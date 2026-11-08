@@ -31,6 +31,7 @@
         <button id="guide-button" class="pixel-button guide-button" type="button" aria-expanded="false" aria-controls="guide-panel">
           <span aria-hidden="true">☰</span> guide
         </button>
+        <a id="resume-button" class="pixel-button resume-button" href="/resume.pdf" download="Sidharth-Anil-Resume.pdf">résumé <span aria-hidden="true">↓</span></a>
         <button id="back-button" class="pixel-button back-button" type="button" aria-label="Back to the room">← <span class="back-button__label">back to the room</span></button>
       </div>
       <ul id="guide-panel" class="guide__panel" hidden></ul>
@@ -179,6 +180,15 @@ And so my fingers reach out to the vine</p>
         </dl>
       </div>
       <footer class="idcard__foot"><span class="idcard__barcode" aria-hidden="true"></span></footer>
+    </div>
+
+    <!-- ===== Pinboard: the résumé. The real first page (npm run resume makes it from public/resume.pdf) ===== -->
+    <div id="resume-ui" class="surface-ui resume" role="region" aria-label="Pinboard: résumé">
+      <img class="resume__page" src="/images/resume-page.png" alt="First page of Sidharth Anil's résumé" width="425" height="550" />
+      <div class="resume__actions">
+        <a class="pixel-button" href="/resume.pdf" target="_blank" rel="noopener">open <span aria-hidden="true">↗</span></a>
+        <a class="pixel-button" href="/resume.pdf" download="Sidharth-Anil-Resume.pdf">download <span aria-hidden="true">↓</span></a>
+      </div>
     </div>
 
     <!-- Projects on the computer. data-post = the write-up (from content/posts), shown under the summary. -->

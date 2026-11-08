@@ -7,6 +7,7 @@ export const SECTIONS = [
   // Hidden for now: the journal stays on the desk but isn't clickable or in the guide.
   { id: 'misc', label: 'Sketches & poems', where: 'the journal', color: '#6fdb6f', hidden: true },
   { id: 'contact', label: 'Contact', where: 'the phone', color: '#4fd2f0' },
+  { id: 'resume', label: 'Résumé', where: 'the pinboard', color: '#f2b880' },
   // Not a close-up: clicking the window switches between day and night
   { id: 'window', label: 'Day / night', where: 'the window', color: '#b48cff', toggle: true },
   // Also in place: clicking the speaker starts or stops the music

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { box, place, toon, glow, C } from '../utils/materials.js';
+import { createPinboard } from './Pinboard.js';
 
 // Room layout (metres, Y-up). Back wall at z=-2 with the window, bed on the left,
 // desk along the right. There is no front wall (the camera lives there), but there is a ceiling
@@ -51,8 +52,8 @@ export function createRoom() {
   room.add(createCabinet());
   room.add(createWallShelf());
 
-  // Posters (flat colour blocks for now)
-  room.add(place(box(0.5, 0.6, 0.02, toon(0x7a3fa8), 'poster_back'), 1.35, 1.2, ROOM.backZ + 0.015));
+  // Pinboard right of the window (the résumé is on it), and a poster on the left wall
+  room.add(createPinboard());
   const posterL = box(0.02, 0.5, 0.4, toon(0x3fb8d8), 'poster_left');
   room.add(place(posterL, ROOM.minX + 0.015, 1.55, -0.2));
 

@@ -15,6 +15,7 @@ import { Hotspots, Guide, markerSprites } from './ui/Guide.js';
 import { SECTIONS, VISIBLE_SECTIONS, sectionById } from './sections.js';
 import { swapWithModel, swapParts, onModelProgress } from './utils/models.js';
 import { Radio } from './audio/Radio.js';
+import { SHEET_CENTER } from './scene/Pinboard.js';
 
 const params = new URLSearchParams(location.search);
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -106,12 +107,15 @@ const rig = new CameraRig(camera);
 const monitorScreen = desk.getObjectByName('monitor_screen');
 const phoneScreen = desk.getObjectByName('phone_screen');
 const idCardFace = desk.getObjectByName('id_card_face');
+const resumeSheet = room.getObjectByName('resume_sheet');
 
 // maxDist: the avatar's head is ~0.9 m in front of the screen; stay well clear of it. On a
 // phone the screen then overflows sideways, but the desktop UI is shown full-width there anyway.
 rig.addShot('projects', (cam) => surfaceShot(cam, planeSurface(monitorScreen, { fill: 0.94, maxDist: 0.7 })));
 rig.addShot('contact', (cam) => surfaceShot(cam, planeSurface(phoneScreen, { fill: 0.86, tilt: 0.05 })));
 rig.addShot('about', (cam) => surfaceShot(cam, planeSurface(idCardFace, { fill: 0.8, tilt: 0.05 })));
+// The résumé on the pinboard, with a bit of the board around it
+rig.addShot('resume', (cam) => surfaceShot(cam, planeSurface(resumeSheet, { fill: 0.82 })));
 rig.addShot('misc', (cam) => {
   // Open journal: both pages (or just the right one on tall screens), seen from slightly toward the reader
   const which = cam.aspect < 1 ? 'right' : 'spread';
@@ -135,6 +139,7 @@ const surfaces = {
   projects: new SurfaceUI(document.getElementById('desktop'), (t) => planeCorners(monitorScreen, t), DESKTOP_SIZE.W, DESKTOP_SIZE.H, { w: 420, h: 720 }),
   contact: new SurfaceUI(document.getElementById('phone-ui'), (t) => planeCorners(phoneScreen, t), 300, 620),
   about: new SurfaceUI(document.getElementById('idcard-ui'), (t) => planeCorners(idCardFace, t), 640, 410, { w: 400, h: 660 }),
+  resume: new SurfaceUI(document.getElementById('resume-ui'), (t) => planeCorners(resumeSheet, t), 425, 552, { w: 425, h: 640 }),
 };
 const uiAmount = Object.fromEntries(SECTIONS.map((s) => [s.id, { v: 0 }]));
 
@@ -143,6 +148,8 @@ const hotspots = new Hotspots();
 hotspots.add('projects', desk.getObjectByName('monitor'), [0.07, 0.41, 0.67], [0, 0.33, 0]);
 hotspots.add('contact', desk.getObjectByName('phone'), [0.085, 0.02, 0.155], [0, 0.006, 0]);
 hotspots.add('about', desk.getObjectByName('id_card'), [0.115, 0.012, 0.08], [0, 0.003, 0]);
+// The whole pinboard; its dot sits on the résumé
+hotspots.add('resume', room.getObjectByName('pinboard'), [0.82, 0.62, 0.08], [0, 0.3, 0.03], SHEET_CENTER);
 // The journal (misc) is hidden for now: no hotspot, so it isn't clickable.
 // hotspots.add('misc', notebook.group, [0.19, 0.03, 0.25], [0.085, 0.01, 0]);
 // The whole window opening, deep enough to include the frame and curtains.
@@ -312,6 +319,8 @@ addEventListener('pointermove', (e) => {
   guide.showTooltip(hovered && sectionById[hovered], e.clientX, e.clientY);
 });
 canvas.addEventListener('click', (e) => {
+  // At a close-up, clicking anywhere outside its screen / card / page goes back to the room
+  if (rig.focus && !rig.flight) { rig.go(null); return; }
   if (!canPick() || dragged) return;
   const id = pickAt(e.clientX, e.clientY);
   if (id) activate(id);

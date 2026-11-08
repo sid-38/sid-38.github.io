@@ -568,6 +568,18 @@ html, body { height: 100%; overflow: hidden; }
 .os-win.is-active .os-win__bar { background: #2b3757; box-shadow: inset 0 -2px 0 #f7c948; }
 .os-win__icon svg { display: block; width: 16px; height: 16px; }
 .os-win__title { flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+/* "un-pixelate ↗": the article on the plain site, in a new tab. Cream with the yellow edge, so it
+   stands out from the window controls */
+.os .os-win__read {
+  flex: none;
+  padding: 1px 7px 2px;
+  font-size: 12px; letter-spacing: 0.04em; line-height: 15px;
+  color: #1e2742; background: #ffeccf;
+  text-decoration: none;
+  box-shadow: inset 0 0 0 2px #0b0e1a, inset 0 -4px 0 #f7c948;
+}
+.os .os-win__read:hover, .os .os-win__read:focus-visible { background: #f7c948; outline: none; }
+.os-win__read[hidden] { display: none; }
 .os-win__btn {
   width: 20px; height: 18px; padding: 0;
   font: inherit; font-size: 15px; line-height: 1;
@@ -777,4 +789,21 @@ html, body { height: 100%; overflow: hidden; }
   .classic-link { right: 16px; bottom: 16px; font-size: 13px; }
   /* the hint sits above the button instead of under it */
   .room-hint { bottom: 64px; }
+}
+
+/* ---- Résumé: the button by the guide, and the page laid over the sheet on the pinboard ---- */
+a.pixel-button { display: inline-block; text-decoration: none; }
+.resume { position: fixed; background: #eef1f7; box-shadow: 0 0 0 2px #0b0e1a; }
+.resume__page { display: block; width: 100%; height: auto; -webkit-font-smoothing: auto; image-rendering: auto; }
+.resume__actions {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  display: flex; justify-content: center; gap: 10px;
+  padding: 12px 0 12px;
+  background: linear-gradient(rgba(238, 241, 247, 0), #eef1f7 45%);
+}
+.resume__actions .pixel-button { font-size: 11px; padding: 0.3em 0.7em 0.35em; }
+.resume.is-compact .resume__actions { position: static; background: none; padding-top: 16px; }
+@media (max-width: 600px) {
+  .resume-button { padding-left: 0.6em; padding-right: 0.6em; }
 }
