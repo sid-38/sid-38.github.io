@@ -30,7 +30,6 @@ const LEAN_TIME = 2.6; // sitting back with hands behind the head, or coming bac
 export const DRINK_TIME = 12.6;
 const LEAN_HANDOFF = 0.4; // a break from watching starts once he's this far from leaned back
 const LEAN_HANDBACK = 1.8; // and he starts leaning back again this long before it ends
-const TAP_BPM = 84; // his foot while watching with no music on (with music, he follows its beat)
 const AUTO_DRINK = [150, 260]; // while typing he has a sip every couple of minutes or so
 
 /**
@@ -210,7 +209,7 @@ const hump = (t, a, b, c, d) => span(t, a, b) * (1 - span(t, c, d));
  *
  * He's always in one of two states, which he holds for a long while:
  *   typing   – the "sit_typing" clip, with a sip from the bottle every few minutes
- *   watching – slouched back, hands behind his head, tapping a foot, a video on the monitor
+ *   watching – slouched back, hands behind his head, a video on the monitor
  * The clock picks the state (scheduledState); clicking him flips it until the next quarter hour.
  */
 export class AvatarMoves {
@@ -333,15 +332,15 @@ export class AvatarMoves {
   }
 
   /**
-   * Foot tap and head bob. With music playing on the speaker he follows its beat (`beat()` gives
-   * where in the beat the track is, 0..1), whether typing or watching; with no music he only
-   * taps along to himself while leaned back watching.
+   * Foot tap and head bob, only while music is playing on the speaker: he follows its beat
+   * (`beat()` gives where in the beat the track is, 0..1), whether typing or watching. When the
+   * music stops he eases out of it from wherever the last beat left him.
    */
   _groove(t, dt) {
     const music = this.beat?.() ?? null;
-    const settled = smoothstep(this.lean, 0.9, 1);
-    const phase = music ?? ((t * TAP_BPM) / 60) % 1;
-    const target = music != null ? 1 : settled;
+    if (music != null) this.lastBeat = music;
+    const phase = this.lastBeat ?? 0;
+    const target = music != null ? 1 : 0;
     this.grooveW = (this.grooveW ?? 0) + (target - (this.grooveW ?? 0)) * Math.min(1, dt * 3);
     const w = this.grooveW;
     if (w < 0.01) return;
