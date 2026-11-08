@@ -64,7 +64,7 @@ html, body { height: 100%; overflow: hidden; }
 .loader__pct { color: #ffd7a3; }
 .loader__label::after { content: ''; animation: loader-dots 1.2s steps(4) infinite; }
 @keyframes loader-dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
-.is-loading .hud, .is-loading .room-hint, .is-loading .now-playing { visibility: hidden; }
+.is-loading .hud, .is-loading .room-hint, .is-loading .now-playing, .is-loading .classic-link { visibility: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .loader { transition: none; }
   .loader__label::after { animation: none; content: '...'; }
@@ -760,4 +760,21 @@ html, body { height: 100%; overflow: hidden; }
 }
 @media (prefers-reduced-motion: reduce) {
   .is-playing .now-playing__bars i { animation: none; height: 10px; }
+}
+
+/* ---- Out to the classic site (bottom right; hidden during close-ups, which have their own UI) ---- */
+.classic-link {
+  position: fixed;
+  right: 20px;
+  bottom: 22px;
+  z-index: 20;
+  font-size: 14px;
+  text-decoration: none;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+.is-focused .classic-link { opacity: 0; visibility: hidden; }
+@media (max-width: 600px) {
+  .classic-link { right: 16px; bottom: 16px; font-size: 13px; }
+  /* the hint sits above the button instead of under it */
+  .room-hint { bottom: 64px; }
 }
